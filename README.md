@@ -1,5 +1,5 @@
 # Natural langauge processing using python
-## Do the following step to run the code in your machine:
+## Do the following steps to run the code in your machine:
 1. clone this project
    `git clone git@github.com:1nuc/nlp-python-project.git`
 2. navigate to that project
