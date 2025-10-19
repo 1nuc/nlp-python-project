@@ -12,5 +12,5 @@
    or if you already have one
    `source your_env_name/bin/activate`
 4. Download the essential libraries
-   `pip install nltk pydantic spacy `
+   `pip install nltk pydantic spacy textblob`
 5. Head Over to the code inside the source directory and run the cells and your good to go
