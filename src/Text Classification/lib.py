@@ -8,7 +8,7 @@ import polars.selectors as cs
 from scipy import stats
 
 
-class loadProfile:
+class TextClassification:
     def __init__(self,data):
         self.data=data
         plt.style.use('ggplot')
@@ -115,7 +115,7 @@ class loadProfile:
         plt.figure(figsize=(20, 8))
         sns.pairplot(data=data, hue=hue_var)
         plt.show()
-#used
+
     def heatmap(self,data, labels):
         plt.figure(figsize=(20, 8))
         plot=sns.heatmap(data, annot=True, fmt=".3f", linewidth=.5, xticklabels=True, yticklabels=True)
