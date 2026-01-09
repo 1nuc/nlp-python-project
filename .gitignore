@@ -1,19 +1,10 @@
-src/.ipynb_checkpoints/*
-src/Words-Preprocessing/.ipynb_checkpoints/*
-src/input/.ipynb_checkpoints/*
-
-# Ignore virtual environments
+**/.ipynb_checkpoints
 venv/
 .env/
 env/
 __pycache__/
 
-# Ignore system / IDE junk
 *.pyc
 .DS_Store
 
-# Ignore Jupyter notebook checkpoints
-.ipynb_checkpoints/
-
-# (Optional) ignore VS Code settings if you want
 .vscode/
