@@ -1,0 +1,11 @@
+polars
+pydantic
+pandas
+matplotlib
+seaborn
+scikit-learn
+spacy
+nltk
+textblob
+numpy
+spacy-cleaner
