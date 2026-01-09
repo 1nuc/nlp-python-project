@@ -11,8 +11,6 @@ from scipy import stats
 class loadProfile:
     def __init__(self,data):
         self.data=data
-        self.devices=[n for n in data.columns if n.startswith('out.electricity')]
-        self.dev_count=len(self.devices)
         plt.style.use('ggplot')
         
     def boxplot_exp(self):
@@ -42,13 +40,6 @@ class loadProfile:
 
     def barplot_seaborn(self,x,y):
         plot=sns.barplot(
-            data=self.data, 
-            x=x, 
-            y=y, 
-            hue=y, estimator='sum')
-    
-    def barplot_mat(self,x,y):
-        plt.barplot(
             data=self.data, 
             x=x, 
             y=y, 
@@ -132,9 +123,9 @@ class loadProfile:
         plot.set_yticklabels(labels, rotation=0)
         plt.show()
 
-    def pie(self, data, x, y):
+    def pie(self, x, y):
         plt.figure(figsize=(20,8))
-        plt.pie(x, labels=y, autopct='%1.1f%%', shadow=True, startangle=90)
+        plt.pie(self.data[x], labels=self.data[y], autopct='%1.1f%%', shadow=True, startangle=90)
         plt.show()
 
     def catplot(self, data, x,y, hue_var, col_var):
