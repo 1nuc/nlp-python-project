@@ -115,14 +115,14 @@ class loadProfile:
         plt.figure(figsize=(20, 8))
         sns.pairplot(data=data, hue=hue_var)
         plt.show()
-
+#used
     def heatmap(self,data, labels):
         plt.figure(figsize=(20, 8))
         plot=sns.heatmap(data, annot=True, fmt=".3f", linewidth=.5, xticklabels=True, yticklabels=True)
         plot.set_xticklabels(labels)
         plot.set_yticklabels(labels, rotation=0)
         plt.show()
-
+# used
     def pie(self, x, y):
         plt.figure(figsize=(20,8))
         plt.pie(self.data[x], labels=self.data[y], autopct='%1.1f%%', shadow=True, startangle=90)
