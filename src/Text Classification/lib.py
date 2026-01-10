@@ -3,6 +3,7 @@ import polars as pl
 import seaborn as sns
 import matplotlib.pyplot as plt
 import os
+from collections import Counter
 from pathlib import Path
 import polars.selectors as cs
 from scipy import stats
@@ -15,14 +16,26 @@ class TextClassification:
         plt.style.use('ggplot')
 
     def barplot_seaborn(self,x,y):
+        plt.figure(figsize=(20,8))
         plot=sns.barplot(
             data=self.data, 
             x=x, 
             y=y, 
             hue=y, estimator='sum')
+    
+    def boxplot(self):
+        words_length=self.data.with_columns(
+            pl.col('OriginalTweet').str.split(' ').list.len().alias("Text Length"))
+        plt.figure(figsize=(20,8))
+        sns.boxplot(data=words_length, x="Sentiment", y="Text Length")
+        plt.title(f"Text length distribution for each sentiment")
+        plt.show()
         
-    def WorldCloud(self):
-        text=' '.join(self.data.select('OriginalTweet').to_series().to_list())
+    def WorldCloud(self, factor=None):
+        data=self.data
+        if factor is not None:
+            data.filter(pl.col('Sentiment')==factor)
+        text=' '.join(data.select('OriginalTweet').to_series().to_list())
         wordcount=WordCloud(height=400, width=800,background_color='white')
         words=wordcount.generate(text)
         image=words.to_image()
@@ -31,7 +44,18 @@ class TextClassification:
         plt.imshow(image_array, interpolation="bilinear")
         plt.axis('off')
         plt.show()
-# used
+        
+    def Top_words(self, factor):
+        data=self.data.filter(pl.col("Sentiment")==factor)
+        words=''.join(data.select(pl.col('OriginalTweet')).to_series().to_list())
+        words_counter=Counter(words.split())
+        most_common=words_counter.most_common(20)
+        words, counter=zip(*most_common)
+        plt.figure(figsize=(20,8))
+        plt.barh(words, counter)
+        plt.title(f"Top words for {factor} class")
+        plt.show()
+
     def pie(self, x, y):
         plt.figure(figsize=(20,8))
         plt.pie(self.data[x], labels=self.data[y], autopct='%1.1f%%', shadow=True, startangle=90)
