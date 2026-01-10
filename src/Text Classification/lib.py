@@ -9,12 +9,51 @@ import polars.selectors as cs
 from scipy import stats
 import numpy as np
 from wordcloud import WordCloud
+import spacy_cleaner
+from spacy_cleaner import removers, mutators
+import string
+from nltk.stem import PorterStemmer
 
 class TextClassification:
     def __init__(self,data):
         self.data=data
         plt.style.use('ggplot')
+        self.nlp=spacy.load('en_core_web_sm')
+        self.spacy_pipeline=spacy_cleaner.Cleaner(
+            self.nlp,
+            removers.remove_email_token,
+            removers.remove_stopword_token,
+            removers.remove_url_token,
+            mutators.mutate_lemma_token,
+            removers.remove_punctuation_token)
 
+        this.stop_words=nltk.corpus.stopwords.words('english')
+
+    ## Data Preprocessing ----------------------------------------------- 
+    def preprocess_spacy(text): # Preprocess the data using spacy
+        # spliiting by @, then rejoining again and form strings
+        text=[''.join(text.split('@'))]
+        # define the pipeline for cleaning text
+        return(self.pipeline.clean(text))
+    
+    def preprocess_pl_native(self): # Preprocess the data using polars native expression
+        # S non whiteshapce character --s whitespace character 
+        data = v.with_columns(
+                pl.col('OriginalTweet').str.to_lowercase().str.replace_all(r'http\S+|www\S+|@|#', '').str.replace_all(r'[^\w\s]', ' ').str.replace_all(r'\s+', ' ').str.strip_chars())
+    return data
+    
+    # removal of stop words and punctuations
+    def remove_stop_words_and_punc(t):
+        punc=string.punctuation
+        list_refined=[word.lower() for word in t if word.lower() not in self.stop_words and word not in punc]
+        return ' '.join(list_refined)
+    
+    def porter_stem(t) -> list:
+        stem_porter=PorterStemmer()
+        return ''.join([stem_porter.stem(word) for word in t])
+
+   
+    # Data Exploration ------------------------------------------------------------------------
     def barplot_seaborn(self,x,y):
         plt.figure(figsize=(20,8))
         plot=sns.barplot(
