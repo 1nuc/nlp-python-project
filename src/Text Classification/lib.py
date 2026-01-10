@@ -3,15 +3,15 @@ import polars as pl
 import seaborn as sns
 import matplotlib.pyplot as plt
 import os
+import nltk
 from collections import Counter
-from pathlib import Path
 import polars.selectors as cs
-from scipy import stats
-import numpy as np
 from wordcloud import WordCloud
 import spacy_cleaner
-from spacy_cleaner import removers, mutators
+from spacy_cleaner import Cleaner
+from spacy_cleaner.processing import removers, mutators
 import string
+import spacy
 from nltk.stem import PorterStemmer
 
 class TextClassification:
@@ -27,7 +27,7 @@ class TextClassification:
             mutators.mutate_lemma_token,
             removers.remove_punctuation_token)
 
-        this.stop_words=nltk.corpus.stopwords.words('english')
+        self.stop_words=nltk.corpus.stopwords.words('english')
 
     ## Data Preprocessing ----------------------------------------------- 
     def preprocess_spacy(text): # Preprocess the data using spacy
@@ -36,11 +36,11 @@ class TextClassification:
         # define the pipeline for cleaning text
         return(self.pipeline.clean(text))
     
-    def preprocess_pl_native(self): # Preprocess the data using polars native expression
+    def preprocess_pl_native(v): # Preprocess the data using polars native expression
         # S non whiteshapce character --s whitespace character 
         data = v.with_columns(
                 pl.col('OriginalTweet').str.to_lowercase().str.replace_all(r'http\S+|www\S+|@|#', '').str.replace_all(r'[^\w\s]', ' ').str.replace_all(r'\s+', ' ').str.strip_chars())
-    return data
+        return data
     
     # removal of stop words and punctuations
     def remove_stop_words_and_punc(t):
