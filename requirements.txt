@@ -1,5 +1,4 @@
 polars
-yellowbrick
 pydantic
 pandas
 matplotlib

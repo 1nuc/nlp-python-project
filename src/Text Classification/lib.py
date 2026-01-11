@@ -18,6 +18,7 @@ from nltk.stem import PorterStemmer
 class TextClassification:
     def __init__(self,data):
         self.data=data
+        plt.rcParams['font.family'] = 'DejaVu Sans'
         plt.style.use('ggplot')
         self.nlp=spacy.load('en_core_web_sm')
         self.spacy_pipeline=spacy_cleaner.Cleaner(
@@ -32,10 +33,9 @@ class TextClassification:
 
     ## Data Preprocessing ----------------------------------------------- 
     def preprocess_spacy(self,text): # Preprocess the data using spacy
-        # spliiting by @, then rejoining again and form strings
-        text=[''.join(text.split('@'))]
         # define the pipeline for cleaning text
-        return(self.pipeline.clean(text))
+        print('-----------processing spacy pipeline -----------')
+        return(self.spacy_pipeline.clean(text))
     
     def preprocess_pl_native(self,v): # Preprocess the data using polars native expression
         # S non whiteshapce character --s whitespace character 
@@ -53,7 +53,12 @@ class TextClassification:
         stem_porter=PorterStemmer()
         return ''.join([stem_porter.stem(word) for word in t])
 
-   
+    def lemmatize_spacy(self, text):
+        doc=self.nlp(text)
+        arr=[]
+        for word in doc:
+            arr.append(word.lemma_)
+        return ' '.join(arr)
     # Data Exploration ------------------------------------------------------------------------
     def barplot_seaborn(self,x,y):
         plt.figure(figsize=(20,8))
