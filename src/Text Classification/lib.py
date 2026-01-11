@@ -18,6 +18,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import classification_report
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+from sklearn.model_selection import GridSearchCV, StratifiedKFold
+
 
 class TextClassification:
     def __init__(self,data):
@@ -139,16 +141,18 @@ class TextClassification:
         return y_test, y_predict, class_names
     
     def display_confusion_mx(self,y_test, y_predict, class_names):
-        cm = confusion_matrix(y_test, y_predict, labels=class_names)
+        labels = list(range(len(class_names)))
+        cm = confusion_matrix(y_test, y_predict, labels=labels)
         vis= ConfusionMatrixDisplay(confusion_matrix=cm,
                                       display_labels=class_names)
-        disp.plot()
+        fig, ax = plt.subplots(figsize=(20, 8))
+        vis.plot(ax=ax)
         plt.show()
     
     def tunning(self, training_data, testing_data, model, param):
         x_train, y_train, x_test, y_test, class_names=self.prepare_data(training_data, testing_data)
         grid_search = GridSearchCV(model, param_grid=param, cv=StratifiedKFold(10), 
-                                   scoring='roc_auc_ovr',
+                                   scoring='accuracy',
                                    n_jobs=-1)
         grid_search.fit(x_train, y_train)
         return grid_search.best_params_, grid_search.best_score_
