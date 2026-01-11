@@ -151,7 +151,7 @@ class TextClassification:
     
     def tunning(self, training_data, testing_data, model, param):
         x_train, y_train, x_test, y_test, class_names=self.prepare_data(training_data, testing_data)
-        grid_search = GridSearchCV(model, param_grid=param, cv=StratifiedKFold(10), 
+        grid_search = GridSearchCV(model, param_grid=param, cv=StratifiedKFold(3), 
                                    scoring='accuracy',
                                    n_jobs=-1)
         grid_search.fit(x_train, y_train)
