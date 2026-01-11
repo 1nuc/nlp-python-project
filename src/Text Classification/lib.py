@@ -14,6 +14,10 @@ from spacy_cleaner.processing import removers, mutators
 import string
 import spacy
 from nltk.stem import PorterStemmer
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import classification_report
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 class TextClassification:
     def __init__(self,data):
@@ -106,4 +110,45 @@ class TextClassification:
         plt.pie(self.data[x], labels=self.data[y], autopct='%1.1f%%', shadow=True, startangle=90)
         plt.show()
 
-  
+#------------------------------------------------------------------
+    # Modelling
+    # manual tf_idf
+    def tf_idf(self, train, test):
+        tf_idf=TfidfVectorizer(max_features=10000, ngram_range=(1,2))
+        x_data=tf_idf.fit_transform(train['OriginalTweet'])
+        x_test=tf_idf.transform(test['OriginalTweet'])
+        feature_names=tf_idf.get_feature_names_out()
+        arr=[]
+        return x_data, x_test
+    
+    def prepare_data(self, training_data, testing_data):
+        le=LabelEncoder()
+        x_train, x_test=self.tf_idf(training_data, testing_data)
+        y_train=le.fit_transform(training_data['Sentiment'])
+        y_test=le.transform(testing_data['Sentiment'])
+        return x_train, y_train, x_test, y_test, le.classes_
+    
+    def modelling(self,Model, training_data, testing_data):
+        x_train, y_train, x_test, y_test, class_names=self.prepare_data(training_data, testing_data)
+        model=Model
+
+        model=model.fit(x_train, y_train)
+        y_predict=model.predict(x_test)
+        report=classification_report(y_test, y_predict, target_names=class_names)
+        print(report)
+        return y_test, y_predict, class_names
+    
+    def display_confusion_mx(self,y_test, y_predict, class_names):
+        cm = confusion_matrix(y_test, y_predict, labels=class_names)
+        vis= ConfusionMatrixDisplay(confusion_matrix=cm,
+                                      display_labels=class_names)
+        disp.plot()
+        plt.show()
+    
+    def tunning(self, training_data, testing_data, model, param):
+        x_train, y_train, x_test, y_test, class_names=self.prepare_data(training_data, testing_data)
+        grid_search = GridSearchCV(model, param_grid=param, cv=StratifiedKFold(10), 
+                                   scoring='roc_auc_ovr',
+                                   n_jobs=-1)
+        grid_search.fit(x_train, y_train)
+        return grid_search.best_params_, grid_search.best_score_
