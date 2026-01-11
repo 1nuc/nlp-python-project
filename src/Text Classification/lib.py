@@ -4,6 +4,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import os
 import nltk
+import numpy as np
 from collections import Counter
 import polars.selectors as cs
 from wordcloud import WordCloud
