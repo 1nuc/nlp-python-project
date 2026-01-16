@@ -1,4 +1,6 @@
 polars
+gensim
+tensorflow
 pydantic
 pandas
 matplotlib
